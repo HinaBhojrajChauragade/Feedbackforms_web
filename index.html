@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Feedback</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f8fb;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: auto;
+  }
+
+  h2 {
+    text-align: center;
+    color: #004aad;
+  }
+
+  form {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  input, textarea, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+
+  button {
+    background: #004aad;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+  }
+
+  button:hover {
+    background: #003080;
+  }
+
+  .feedback-list {
+    margin-top: 30px;
+  }
+
+  .card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  @media(max-width:600px){
+    body { padding: 10px; }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>📢 Event Feedback</h2>
+
+  <form id="feedbackForm">
+    <input type="text" id="name" placeholder="Your Name" required>
+    <input type="email" id="email" placeholder="Email (optional)">
+    
+    <select id="rating" required>
+      <option value="">Rate the Event</option>
+      <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+      <option value="4">⭐⭐⭐⭐ Good</option>
+      <option value="3">⭐⭐⭐ Average</option>
+      <option value="2">⭐⭐ Poor</option>
+      <option value="1">⭐ Very Poor</option>
+    </select>
+
+    <textarea id="feedback" rows="4" placeholder="Your Feedback" required></textarea>
+    <button type="submit">Submit Feedback</button>
+  </form>
+
+  <div class="feedback-list" id="feedbackList"></div>
+</div>
+
+<script>
+const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
+
+// Submit Feedback
+document.getElementById("feedbackForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const data = {
+    name: name.value,
+    email: email.value,
+    rating: rating.value,
+    feedback: feedback.value
+  };
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  }).then(() => {
+    e.target.reset();
+    loadFeedback();
+  });
+});
+
+// Load Feedback (Real-Time)
+function loadFeedback() {
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+      const list = document.getElementById("feedbackList");
+      list.innerHTML = "";
+      data.reverse().forEach(f => {
+        list.innerHTML += `
+          <div class="card">
+            <strong>${f.name}</strong> ⭐${f.rating}
+            <p>${f.feedback}</p>
+          </div>
+        `;
+      });
+    });
+}
+
+// Auto refresh every 5 seconds
+loadFeedback();
+setInterval(loadFeedback, 5000);
+</script>
+
+</body>
+</html>
