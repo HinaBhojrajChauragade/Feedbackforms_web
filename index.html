@@ -6,78 +6,129 @@
 <title>Event Feedback</title>
 
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f8fb;
-    margin: 0;
-    padding: 20px;
-  }
+* { box-sizing: border-box; }
 
-  .container {
-    max-width: 900px;
-    margin: auto;
-  }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f8fb;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
 
-  h2 {
-    text-align: center;
-    color: #004aad;
-  }
+.container {
+  width: 100%;
+  max-width: 420px;
+}
 
-  form {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  }
+/* LOGO BANNER */
+.logo-banner {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+.logo-banner img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
 
-  input, textarea, select, button {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-  }
+/* FORM */
+form {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
 
-  button {
-    background: #004aad;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-  }
+form input,
+form select,
+form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
 
-  button:hover {
-    background: #003080;
-  }
+.readonly {
+  background: #eef2f7;
+  font-weight: bold;
+}
 
-  .feedback-list {
-    margin-top: 30px;
-  }
+button {
+  background: #004aad;
+  color: white;
+  font-size: 16px;
+  border: none;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-  .card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
+/* POPUP */
+.popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  @media(max-width:600px){
-    body { padding: 10px; }
-  }
+.popup {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+}
+
+.popup img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+
+.popup-content {
+  padding: 20px;
+}
+
+/* DARK MODE */
+@media (prefers-color-scheme: dark) {
+  body { background: #0f172a; }
+  form, .popup { background: #020617; color: #e5e7eb; }
+  form input, form select, form textarea { background: #020617; color: #e5e7eb; border: 1px solid #334155; }
+  .readonly { background: #020617; }
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
-  <h2>📢 Event Feedback</h2>
 
-  <form id="feedbackForm" action="https://sheetdb.io/api/v1/agninoua4xntu">
-    <input type="text" id="name" placeholder="Your name" required>
-    <input type="email" id="email" placeholder="Email (optional)">
-    
-    <select id="rating" required>
+  <div class="logo-banner">
+    <img src="GDG Kits logo (2).png" alt="Logo">
+  </div>
+
+  <form id="feedbackForm">
+    <input name="name" placeholder="Your Name" required>
+    <input name="email" type="email" placeholder="Email Address" required>
+
+    <!-- readonly event name -->
+    <input type="text" id="eventDisplay" class="readonly" readonly>
+    <input type="hidden" name="event" id="eventHidden">
+
+    <select name="rating" required>
       <option value="">Rate the Event</option>
       <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
       <option value="4">⭐⭐⭐⭐ Good</option>
@@ -86,57 +137,55 @@
       <option value="1">⭐ Very Poor</option>
     </select>
 
-    <textarea id="feedback" rows="4" placeholder="Your Feedback" required></textarea>
+    <textarea name="feedback" rows="4" placeholder="Your Feedback" required></textarea>
+
     <button type="submit">Submit Feedback</button>
   </form>
+</div>
 
-  <div class="feedback-list" id="feedbackList"></div>
+<!-- THANK YOU POPUP -->
+<div class="popup-overlay" id="thankYouPopup">
+  <div class="popup">
+    <img src="GDG Kits logo (2).png">
+    <div class="popup-content">
+      <h3>Thank You! 🎉</h3>
+      <p>Your feedback has been submitted successfully.</p>
+      <button onclick="closePopup()">Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
-const API_URL = "YOUR_GOOGLE_SCRIPT_URL";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwhiLQkGf2dz5umNiDOvK-InwD0CUvTHEoqBRTWrGYUw6CUG6NEcM3d9DZUCLgxNRTCXw/exec"; // Replace with your deployed Google Apps Script URL
 
-// Submit Feedback
-document.getElementById("feedbackForm").addEventListener("submit", e => {
+// Hardcoded event name (same as doPost)
+const EVENT_NAME = "Hackathon 2025";
+document.getElementById("eventDisplay").value = EVENT_NAME;
+document.getElementById("eventHidden").value = EVENT_NAME;
+
+// Submit form
+document.getElementById("feedbackForm").addEventListener("submit", function(e) {
   e.preventDefault();
+  const formData = new FormData(this);
 
-  const data = {
-    name: name.value,
-    email: email.value,
-    rating: rating.value,
-    feedback: feedback.value
-  };
-
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(data)
-  }).then(() => {
-    e.target.reset();
-    loadFeedback();
-  });
+  fetch(WEB_APP_URL, { method: "POST", body: formData })
+    .then(res => res.text())
+    .then(result => {
+      if (result.trim() === "success") {
+        document.getElementById("thankYouPopup").style.display = "flex";
+        this.reset();
+        document.getElementById("eventDisplay").value = EVENT_NAME;
+        document.getElementById("eventHidden").value = EVENT_NAME;
+      } else {
+        alert("Error submitting feedback!");
+      }
+    })
+    .catch(err => alert("Error: " + err));
 });
 
-// Load Feedback (Real-Time)
-function loadFeedback() {
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => {
-      const list = document.getElementById("feedbackList");
-      list.innerHTML = "";
-      data.reverse().forEach(f => {
-        list.innerHTML += `
-          <div class="card">
-            <strong>${f.name}</strong> ⭐${f.rating}
-            <p>${f.feedback}</p>
-          </div>
-        `;
-      });
-    });
+function closePopup() {
+  document.getElementById("thankYouPopup").style.display = "none";
 }
-
-// Auto refresh every 5 seconds
-loadFeedback();
-setInterval(loadFeedback, 5000);
 </script>
 
 </body>
