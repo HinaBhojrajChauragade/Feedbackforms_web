@@ -4,184 +4,190 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Event Feedback</title>
-
 <style>
-* { box-sizing: border-box; }
-
-body {
-  font-family: Arial, sans-serif;
-  background: #ffffff;     /* ✅ always white */
-  margin: 0;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-.container {
-  width: 100%;
-  max-width: 420px;
-}
-
-/* LOGO BANNER */
-.logo-banner {
-  width: 100%;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 15px;
-}
-
-.logo-banner img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-  display: block;
-}
-
-/* FORM */
-form {
-  background: #ffffff;     /* ✅ always white */
-  padding: 25px;
-  border-radius: 14px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-}
-
-form input,
-form select,
-form textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-  background: #ffffff;     /* ✅ always white */
-  color: #000000;
-}
-
-.readonly {
-  background: #eef2f7;
-  font-weight: bold;
-}
-
-button {
-  background: #004aad;
-  color: white;
-  font-size: 16px;
-  border: none;
-  margin-top: 18px;
-  padding: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#fff;display:flex;justify-content:center;padding:20px}
+.container{max-width:420px;width:100%}
+.logo-banner{border-radius:14px;overflow:hidden;margin-bottom:15px}
+.logo-banner img{width:100%;height:140px;object-fit:cover}
+form{background:#fff;padding:25px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:12px}
+input,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;font-size:14px}
+.readonly{background:#eef2f7;font-weight:bold}
+button{background:#004aad;color:#fff;font-size:16px;border:none;padding:12px;border-radius:8px;cursor:pointer}
+/* EMOJI RATING */
+.emoji-rating{display:flex;justify-content:space-between;padding:10px 0}
+.emoji-item{display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.emoji-item span{font-size:30px;transition:transform .3s ease}
+.emoji-item.selected span{font-size:42px;font-weight:bold}
+.emoji-item span.animate{animation:popSettle .5s forwards}
+@keyframes popSettle{0%{transform:scale(1)}30%{transform:scale(1.6) translateY(-15px)}70%{transform:scale(1.3) translateY(-5px)}100%{transform:scale(1.3)}}
+.emoji-label{font-size:12px;margin-top:4px;transition:transform .3s ease}
+.emoji-label.bounce{animation:labelBounce .5s forwards}
+@keyframes labelBounce{0%{transform:translateY(0)}30%{transform:translateY(-8px)}60%{transform:translateY(2px)}100%{transform:translateY(0)}}
+/* CONFETTI */
+.particle{position:absolute;pointer-events:none;width:10px;height:10px;border-radius:50%}
+.ribbon{width:4px;height:12px}
+.heart{width:10px;height:10px;background:#ff69b4;clip-path:polygon(50% 0%,61% 10%,70% 20%,50% 40%,30% 20%,39% 10%)}
 /* POPUP */
-.popup-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.popup {
-  background: #ffffff;     /* ✅ always white */
-  border-radius: 16px;
-  overflow: hidden;
-  max-width: 360px;
-  width: 90%;
-  text-align: center;
-}
-
-.popup img {
-  width: 100%;
-  height: 140px;
-  object-fit: cover;
-}
-
-.popup-content {
-  padding: 20px;
-}
+.popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);justify-content:center;align-items:center}
+.popup{background:#fff;border-radius:16px;overflow:hidden;max-width:360px;width:90%;text-align:center}
+.popup img{width:100%;height:140px;object-fit:cover}
+.popup-content{padding:20px}
+/* SUBMITTED MESSAGE */
+#submittedMessage{display:none;text-align:center;margin-top:20px;font-size:16px;font-weight:bold;}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
   <div class="logo-banner">
-    <img src="GDG Kits logo (2).png" alt="Logo">
+    <img src="GDG Kits logo (2).png">
   </div>
-
   <form id="feedbackForm">
     <input name="name" placeholder="Your Name" required>
     <input name="email" type="email" placeholder="Email Address" required>
-
-    <input type="text" id="eventDisplay" class="readonly" readonly>
+    <input class="readonly" id="eventDisplay" readonly>
     <input type="hidden" name="event" id="eventHidden">
-
-    <select name="rating" required>
-      <option value="">Rate the Event</option>
-      <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
-      <option value="4">⭐⭐⭐⭐ Good</option>
-      <option value="3">⭐⭐⭐ Average</option>
-      <option value="2">⭐⭐ Poor</option>
-      <option value="1">⭐ Very Poor</option>
-    </select>
-
-    <textarea name="feedback" rows="4" placeholder="Your Feedback" required></textarea>
-
-    <button type="submit">Submit Feedback</button>
+    <label>Rating:</label>
+    <div class="emoji-rating">
+      <div class="emoji-item"><span data-value="1">😞</span><div class="emoji-label">Very Bad</div></div>
+      <div class="emoji-item"><span data-value="2">😐</span><div class="emoji-label">Bad</div></div>
+      <div class="emoji-item"><span data-value="3">🙂</span><div class="emoji-label">Okay</div></div>
+      <div class="emoji-item"><span data-value="4">😊</span><div class="emoji-label">Good</div></div>
+      <div class="emoji-item"><span data-value="5">😃</span><div class="emoji-label">Excellent</div></div>
+    </div>
+    <input type="hidden" name="rating" id="ratingInput" value="3">
+    <textarea name="feedback" rows="4" placeholder="Your Feedback (max 250 words)" required></textarea>
+    <button type="submit" id="submitBtn">Submit Feedback</button>
   </form>
+
+  <div id="submittedMessage">Your response is submitted ✅</div>
 </div>
 
-<!-- THANK YOU POPUP -->
+<!-- SUCCESS POPUP -->
 <div class="popup-overlay" id="thankYouPopup">
   <div class="popup">
     <img src="GDG Kits logo (2).png">
     <div class="popup-content">
-      <h3>Thank You! 🎉</h3>
-      <p>Your feedback has been submitted successfully.</p>
+      <h3>Thank You 🎉</h3>
+      <p>Your feedback has been submitted</p>
       <button onclick="closePopup()">Close</button>
     </div>
   </div>
 </div>
 
+<!-- ALREADY SUBMITTED POPUP -->
+<div class="popup-overlay" id="alreadyPopup">
+  <div class="popup">
+    <img src="GDG Kits logo (2).png">
+    <div class="popup-content">
+      <h3>Feedback Already Submitted ⚠️</h3>
+      <p>You have already submitted feedback for this event.</p>
+      <button onclick="closeAlreadyPopup()">Close</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const WEB_APP_URL =
-"https://script.google.com/macros/s/AKfycbwhiLQkGf2dz5umNiDOvK-InwD0CUvTHEoqBRTWrGYUw6CUG6NEcM3d9DZUCLgxNRTCXw/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybzgOjMckqq7sBoQkDfL5oG_v3qHrXfBHMeYrQ_agns2NHad8bo6r72wh13q1DyUWYQA/exec";
+const eventDisplay = document.getElementById("eventDisplay");
+const eventHidden = document.getElementById("eventHidden");
+const emojis = document.querySelectorAll(".emoji-item");
+const ratingInput = document.getElementById("ratingInput");
+const feedbackForm = document.getElementById("feedbackForm");
+const submitBtn = document.getElementById("submitBtn");
+const thankYouPopup = document.getElementById("thankYouPopup");
+const alreadyPopup = document.getElementById("alreadyPopup");
+const submittedMessage = document.getElementById("submittedMessage");
 
-const EVENT_NAME = "Hackathon 2025";
-document.getElementById("eventDisplay").value = EVENT_NAME;
-document.getElementById("eventHidden").value = EVENT_NAME;
+// Check localStorage to persist submitted state
+if(localStorage.getItem("feedbackSubmitted") === "true"){
+  feedbackForm.style.display = "none";
+  submittedMessage.style.display = "block";
+}
 
-document.getElementById("feedbackForm").addEventListener("submit", function(e){
-  e.preventDefault();
-
-  fetch(WEB_APP_URL, {
-    method: "POST",
-    body: new FormData(this)
+// Fetch event name from backend
+fetch(WEB_APP_URL + "?action=get_event_name")
+  .then(res => res.json())
+  .then(data => {
+    const EVENT_NAME = data.event || "Unknown Event";
+    eventDisplay.value = EVENT_NAME;
+    eventHidden.value = EVENT_NAME;
   })
-  .then(res => res.text())
-  .then(result => {
-    if(result.trim() === "success"){
-      document.getElementById("thankYouPopup").style.display = "flex";
-      this.reset();
-      eventDisplay.value = EVENT_NAME;
-      eventHidden.value = EVENT_NAME;
-    } else {
-      alert("Error submitting feedback");
-    }
+  .catch(err => {
+    console.error("Error fetching event name:", err);
+    eventDisplay.value = "Unknown Event";
+    eventHidden.value = "Unknown Event";
   });
+
+// Emoji selection + animation + confetti
+function confetti(el){
+  const rect = el.getBoundingClientRect();
+  for(let i=0;i<20;i++){
+    const p=document.createElement("div");
+    p.className="particle "+(Math.random()>0.5?"ribbon":"heart");
+    p.style.left=rect.left+rect.width/2+"px";
+    p.style.top=rect.top+"px";
+    p.style.background=`hsl(${Math.random()*360},90%,60%)`;
+    document.body.appendChild(p);
+    let x=0,y=0,vy=Math.random()*-6;
+    const anim=setInterval(()=>{
+      y+=vy;vy+=.3;
+      p.style.transform=`translate(${x}px,${y}px)`;
+      p.style.opacity-=.03;
+    },16);
+    setTimeout(()=>{clearInterval(anim);p.remove()},800);
+  }
+}
+
+emojis.forEach(item=>{
+  const emoji = item.querySelector("span");
+  const label = item.querySelector(".emoji-label");
+  function select(){
+    emojis.forEach(i=>i.classList.remove("selected"));
+    item.classList.add("selected");
+    ratingInput.value = emoji.dataset.value;
+    emoji.classList.add("animate");
+    label.classList.add("bounce");
+    confetti(item);
+    setTimeout(()=>{emoji.classList.remove("animate");label.classList.remove("bounce");},500);
+  }
+  emoji.onclick = select;
+  label.onclick = select;
 });
 
-function closePopup(){
-  document.getElementById("thankYouPopup").style.display = "none";
-}
-</script>
+// Form submit
+feedbackForm.onsubmit = e=>{
+  e.preventDefault();
+  submitBtn.disabled = true;
+  fetch(WEB_APP_URL, {method:"POST", body:new FormData(feedbackForm)})
+  .then(r=>r.text())
+  .then(t=>{
+    submitBtn.disabled = false;
+    if(t.trim() === "success"){
+      thankYouPopup.style.display = "flex";
+      localStorage.setItem("feedbackSubmitted","true"); // persist state
+      feedbackForm.reset();
+      emojis.forEach(i=>i.classList.remove("selected"));
+      ratingInput.value = 3;
+    } else if(t.trim() === "already_submitted"){
+      alreadyPopup.style.display = "flex";
+    } else {
+      alert("Error submitting feedback!");
+    }
+  })
+  .catch(err=>{
+    submitBtn.disabled = false;
+    alert("Error: "+err);
+  });
+};
 
+// Close popups
+function closePopup(){ 
+  thankYouPopup.style.display = "none"; 
+  feedbackForm.style.display = "none";       // hide form
+  submittedMessage.style.display = "block";  // show message
+}
+function closeAlreadyPopup(){ alreadyPopup.style.display = "none"; }
+</script>
 </body>
 </html>
