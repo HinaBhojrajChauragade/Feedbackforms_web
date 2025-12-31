@@ -10,7 +10,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: #f4f8fb;
+  background: #ffffff;     /* ✅ always white */
   margin: 0;
   padding: 20px;
   display: flex;
@@ -29,15 +29,17 @@ body {
   overflow: hidden;
   margin-bottom: 15px;
 }
+
 .logo-banner img {
   width: 100%;
   height: 140px;
   object-fit: cover;
+  display: block;
 }
 
 /* FORM */
 form {
-  background: white;
+  background: #ffffff;     /* ✅ always white */
   padding: 25px;
   border-radius: 14px;
   box-shadow: 0 6px 16px rgba(0,0,0,0.1);
@@ -54,6 +56,8 @@ form textarea {
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 14px;
+  background: #ffffff;     /* ✅ always white */
+  color: #000000;
 }
 
 .readonly {
@@ -84,7 +88,7 @@ button {
 }
 
 .popup {
-  background: white;
+  background: #ffffff;     /* ✅ always white */
   border-radius: 16px;
   overflow: hidden;
   max-width: 360px;
@@ -101,14 +105,6 @@ button {
 .popup-content {
   padding: 20px;
 }
-
-/* DARK MODE */
-@media (prefers-color-scheme: dark) {
-  body { background: #0f172a; }
-  form, .popup { background: #020617; color: #e5e7eb; }
-  form input, form select, form textarea { background: #020617; color: #e5e7eb; border: 1px solid #334155; }
-  .readonly { background: #020617; }
-}
 </style>
 </head>
 
@@ -124,7 +120,6 @@ button {
     <input name="name" placeholder="Your Name" required>
     <input name="email" type="email" placeholder="Email Address" required>
 
-    <!-- readonly event name -->
     <input type="text" id="eventDisplay" class="readonly" readonly>
     <input type="hidden" name="event" id="eventHidden">
 
@@ -156,34 +151,34 @@ button {
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwhiLQkGf2dz5umNiDOvK-InwD0CUvTHEoqBRTWrGYUw6CUG6NEcM3d9DZUCLgxNRTCXw/exec"; // Replace with your deployed Google Apps Script URL
+const WEB_APP_URL =
+"https://script.google.com/macros/s/AKfycbwhiLQkGf2dz5umNiDOvK-InwD0CUvTHEoqBRTWrGYUw6CUG6NEcM3d9DZUCLgxNRTCXw/exec";
 
-// Hardcoded event name (same as doPost)
 const EVENT_NAME = "Hackathon 2025";
 document.getElementById("eventDisplay").value = EVENT_NAME;
 document.getElementById("eventHidden").value = EVENT_NAME;
 
-// Submit form
-document.getElementById("feedbackForm").addEventListener("submit", function(e) {
+document.getElementById("feedbackForm").addEventListener("submit", function(e){
   e.preventDefault();
-  const formData = new FormData(this);
 
-  fetch(WEB_APP_URL, { method: "POST", body: formData })
-    .then(res => res.text())
-    .then(result => {
-      if (result.trim() === "success") {
-        document.getElementById("thankYouPopup").style.display = "flex";
-        this.reset();
-        document.getElementById("eventDisplay").value = EVENT_NAME;
-        document.getElementById("eventHidden").value = EVENT_NAME;
-      } else {
-        alert("Error submitting feedback!");
-      }
-    })
-    .catch(err => alert("Error: " + err));
+  fetch(WEB_APP_URL, {
+    method: "POST",
+    body: new FormData(this)
+  })
+  .then(res => res.text())
+  .then(result => {
+    if(result.trim() === "success"){
+      document.getElementById("thankYouPopup").style.display = "flex";
+      this.reset();
+      eventDisplay.value = EVENT_NAME;
+      eventHidden.value = EVENT_NAME;
+    } else {
+      alert("Error submitting feedback");
+    }
+  });
 });
 
-function closePopup() {
+function closePopup(){
   document.getElementById("thankYouPopup").style.display = "none";
 }
 </script>
