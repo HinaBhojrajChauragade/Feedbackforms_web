@@ -88,7 +88,7 @@ button{background:#004aad;color:#fff;font-size:16px;border:none;padding:12px;bor
 </div>
 
 <script>
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbybzgOjMckqq7sBoQkDfL5oG_v3qHrXfBHMeYrQ_agns2NHad8bo6r72wh13q1DyUWYQA/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxqsp1ByYnKufAAISzepQQ8uU7aRWgEp0E6hbL8N03Z8b7bHtFtlLJnYqlAKyYW_JHEIQ/exec";
 const eventDisplay = document.getElementById("eventDisplay");
 const eventHidden = document.getElementById("eventHidden");
 const emojis = document.querySelectorAll(".emoji-item");
@@ -99,19 +99,23 @@ const thankYouPopup = document.getElementById("thankYouPopup");
 const alreadyPopup = document.getElementById("alreadyPopup");
 const submittedMessage = document.getElementById("submittedMessage");
 
-// Check localStorage to persist submitted state
-if(localStorage.getItem("feedbackSubmitted") === "true"){
-  feedbackForm.style.display = "none";
-  submittedMessage.style.display = "block";
-}
-
-// Fetch event name from backend
+// Fetch event name from backend first
 fetch(WEB_APP_URL + "?action=get_event_name")
   .then(res => res.json())
   .then(data => {
     const EVENT_NAME = data.event || "Unknown Event";
     eventDisplay.value = EVENT_NAME;
     eventHidden.value = EVENT_NAME;
+
+    // Check localStorage to persist submitted state per event
+    const submittedEvent = localStorage.getItem("feedbackSubmittedEvent");
+    if(submittedEvent && submittedEvent === EVENT_NAME){
+      feedbackForm.style.display = "none";
+      submittedMessage.style.display = "block";
+    } else {
+      feedbackForm.style.display = "flex";
+      submittedMessage.style.display = "none";
+    }
   })
   .catch(err => {
     console.error("Error fetching event name:", err);
@@ -165,7 +169,7 @@ feedbackForm.onsubmit = e=>{
     submitBtn.disabled = false;
     if(t.trim() === "success"){
       thankYouPopup.style.display = "flex";
-      localStorage.setItem("feedbackSubmitted","true"); // persist state
+      localStorage.setItem("feedbackSubmittedEvent", eventDisplay.value); // store current event
       feedbackForm.reset();
       emojis.forEach(i=>i.classList.remove("selected"));
       ratingInput.value = 3;
@@ -184,8 +188,8 @@ feedbackForm.onsubmit = e=>{
 // Close popups
 function closePopup(){ 
   thankYouPopup.style.display = "none"; 
-  feedbackForm.style.display = "none";       // hide form
-  submittedMessage.style.display = "block";  // show message
+  feedbackForm.style.display = "none";       
+  submittedMessage.style.display = "block";  
 }
 function closeAlreadyPopup(){ alreadyPopup.style.display = "none"; }
 </script>
