@@ -120,11 +120,32 @@ button:disabled{opacity:.7}
   margin-bottom:12px
 }
 
+/* ✅ PROFESSIONAL SUBMITTED PAGE */
 #submittedMessage{
   display:none;
+  margin-top:30px;
+}
+.success-card{
+  background:#f0f7ff;
+  border:1px solid #cfe2ff;
+  border-radius:16px;
+  padding:25px;
   text-align:center;
+}
+.success-icon{
+  font-size:42px;
+  margin-bottom:10px;
+}
+.success-title{
+  font-size:18px;
   font-weight:bold;
-  margin-top:20px
+  color:#0b5ed7;
+  margin-bottom:8px;
+}
+.success-text{
+  font-size:14px;
+  color:#333;
+  line-height:1.5;
 }
 </style>
 </head>
@@ -136,7 +157,6 @@ button:disabled{opacity:.7}
     <img src="GDG Kits logo (2).png">
   </div>
 
-  <!-- FORM HEADING (ONLY HERE) -->
   <div class="heading" id="formHeading">Feedback Form</div>
 
   <form id="feedbackForm">
@@ -165,7 +185,19 @@ button:disabled{opacity:.7}
     </button>
   </form>
 
-  <div id="submittedMessage">✅ Your response is submitted</div>
+  <!-- ✅ PROFESSIONAL MESSAGE -->
+  <div id="submittedMessage">
+    <div class="success-card">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Feedback Submitted Successfully</div>
+      <div class="success-text">
+        Thank you for sharing your valuable feedback.<br>
+        Your response has been securely recorded and will help us
+        enhance future events.
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- THANK YOU POPUP -->
@@ -174,9 +206,8 @@ button:disabled{opacity:.7}
     <img src="GDG Kits logo (2).png">
     <h3>Thank You! 🙌</h3>
     <p>
-      We truly appreciate you taking the time to share your feedback.<br><br>
-      Your response has been successfully recorded and will help us improve
-      future events.
+      We appreciate your time and input.<br><br>
+      Your feedback means a lot to us.
     </p>
   </div>
 </div>
@@ -200,7 +231,7 @@ fetch(WEB_APP_URL+"?action=get_event_name")
 
   if(localStorage.getItem("submitted_"+d.event)){
     form.style.display="none";
-    document.getElementById("formHeading").style.display="none";
+    formHeading.style.display="none";
     submittedMessage.style.display="block";
   }
 });
@@ -236,11 +267,10 @@ form.onsubmit=e=>{
       localStorage.setItem("submitted_"+eventHidden.value,"yes");
       thankyou.style.display="flex";
 
-      // 🔕 SILENT AUTO CLOSE (NO TEXT)
       setTimeout(()=>{
         thankyou.style.display="none";
         form.style.display="none";
-        document.getElementById("formHeading").style.display="none";
+        formHeading.style.display="none";
         submittedMessage.style.display="block";
       },6000);
     }
