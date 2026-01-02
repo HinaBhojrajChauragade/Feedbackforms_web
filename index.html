@@ -7,158 +7,65 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:Arial,sans-serif;
-  background:#fff;
-  display:flex;
-  justify-content:center;
-  padding:20px
-}
+body{font-family:Arial,sans-serif;background:#fff;display:flex;justify-content:center;padding:20px}
 .container{max-width:420px;width:100%}
 
 /* LOGO */
-.logo-banner img{
-  width:100%;
-  height:140px;
-  object-fit:cover;
-  border-radius:14px
-}
+.logo-banner img{width:100%;height:140px;object-fit:cover;border-radius:14px}
 
 /* HEADING */
-.heading{
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-  margin:12px 0 18px
-}
+.heading{text-align:center;font-size:20px;font-weight:bold;margin:12px 0 18px}
 
 /* FORM */
-form{
-  background:#fff;
-  padding:25px;
-  border-radius:14px;
-  box-shadow:0 6px 16px rgba(0,0,0,.1);
-  display:flex;
-  flex-direction:column;
-  gap:12px
-}
-
-input,textarea{
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #ccc
-}
+form{background:#fff;padding:25px;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.1);display:flex;flex-direction:column;gap:12px}
+input,textarea{padding:12px;border-radius:8px;border:1px solid #ccc;font-size:14px}
 .readonly{background:#eef2f7;font-weight:bold}
-
-button{
-  background:#004aad;
-  color:#fff;
-  border:none;
-  padding:12px;
-  border-radius:8px;
-  font-size:16px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px
-}
+button{background:#004aad;color:#fff;border:none;padding:12px;border-radius:8px;font-size:16px;cursor:pointer;display:flex;justify-content:center;align-items:center;gap:8px}
 button:disabled{opacity:.7}
 
 /* LOADER */
-.spinner{
-  width:18px;
-  height:18px;
-  border:3px solid #fff;
-  border-top:3px solid transparent;
-  border-radius:50%;
-  animation:spin 1s linear infinite
-}
+.spinner{width:18px;height:18px;border:3px solid #fff;border-top:3px solid transparent;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{100%{transform:rotate(360deg)}}
 
 /* EMOJI */
-.emoji-rating{
-  display:flex;
-  justify-content:space-between;
-  padding:10px 0
-}
-.emoji-item{text-align:center;cursor:pointer}
+.emoji-rating{display:flex;justify-content:space-between;padding:10px 0}
+.emoji-item{text-align:center;cursor:pointer;transition:.3s}
 .emoji-item span{font-size:30px;transition:.3s}
 .emoji-item.selected span{font-size:42px}
 .emoji-label{font-size:12px;margin-top:4px}
 .emoji-item.selected .emoji-label{font-weight:bold}
 
 /* ERROR */
-.rating-error{
-  color:#d93025;
-  font-size:12px;
-  display:none
-}
+.rating-error{color:#d93025;font-size:12px;display:none}
 
 /* POPUP */
-.popup-overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  justify-content:center;
-  align-items:center
-}
-.popup{
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  width:90%;
-  max-width:360px;
-  text-align:center
-}
-.popup img{
-  width:100%;
-  height:120px;
-  object-fit:cover;
-  border-radius:12px;
-  margin-bottom:12px
-}
+.popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);justify-content:center;align-items:center;z-index:10}
+.popup{background:#fff;border-radius:16px;padding:22px;width:90%;max-width:360px;text-align:center}
+.popup img{width:100%;height:120px;object-fit:cover;border-radius:12px;margin-bottom:14px}
+.popup h3{font-size:18px;margin-bottom:6px}
+.popup p{font-size:14px;color:#444;line-height:1.6}
 
-/* ✅ PROFESSIONAL SUBMITTED PAGE */
-#submittedMessage{
-  display:none;
-  margin-top:30px;
-}
-.success-card{
-  background:#f0f7ff;
-  border:1px solid #cfe2ff;
-  border-radius:16px;
-  padding:25px;
-  text-align:center;
-}
-.success-icon{
-  font-size:42px;
-  margin-bottom:10px;
-}
-.success-title{
-  font-size:18px;
-  font-weight:bold;
-  color:#0b5ed7;
-  margin-bottom:8px;
-}
-.success-text{
-  font-size:14px;
-  color:#333;
-  line-height:1.5;
-}
+/* PROFESSIONAL THANK YOU CARD */
+#submittedMessage{display:none;margin-top:30px}
+.success-card{background:#f0f7ff;border:1px solid #cfe2ff;border-radius:16px;padding:28px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.1)}
+.success-icon{font-size:46px;margin-bottom:14px}
+.success-title{font-size:20px;font-weight:bold;color:#0b5ed7;margin-bottom:10px}
+.success-text{font-size:14px;color:#333;line-height:1.7}
 </style>
 </head>
-
 <body>
+
 <div class="container">
 
+  <!-- LOGO -->
   <div class="logo-banner">
-    <img src="GDG Kits logo (2).png">
+    <img src="GDG Kits logo (2).png" alt="Logo">
   </div>
 
-  <div class="heading" id="formHeading">Feedback Form</div>
+  <!-- HEADING -->
+  <div class="heading" id="formHeading">Event Feedback</div>
 
+  <!-- FORM -->
   <form id="feedbackForm">
     <input name="name" placeholder="Your Name" required>
     <input name="email" type="email" placeholder="Email Address" required>
@@ -185,36 +92,31 @@ button:disabled{opacity:.7}
     </button>
   </form>
 
-  <!-- ✅ PROFESSIONAL MESSAGE -->
+  <!-- PROFESSIONAL THANK YOU -->
   <div id="submittedMessage">
     <div class="success-card">
       <div class="success-icon">✅</div>
       <div class="success-title">Feedback Submitted Successfully</div>
       <div class="success-text">
-        Thank you for sharing your valuable feedback.<br>
-        Your response has been securely recorded and will help us
-        enhance future events.
+        Thank you! Your feedback has been stored securely.<br>
+        We appreciate your input and it will help improve future events.
       </div>
     </div>
   </div>
 
 </div>
 
-<!-- THANK YOU POPUP -->
+<!-- POPUP -->
 <div class="popup-overlay" id="thankyou">
   <div class="popup">
-    <img src="GDG Kits logo (2).png">
+    <img src="GDG Kits logo (2).png" alt="Logo">
     <h3>Thank You! 🙌</h3>
-    <p>
-      We appreciate your time and input.<br><br>
-      Your feedback means a lot to us.
-    </p>
+    <p>Your feedback has been logged and acknowledged.</p>
   </div>
 </div>
 
 <script>
-const WEB_APP_URL =
-"https://script.google.com/macros/s/AKfycbwPEL-I54Eds8XG88aqoVEtAu630fY3_apZhPU1NQ_rfSJ_eVRvMsuL-UiZz14VBzqxfA/exec";
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxTJvsvG6ovtfguWT6g6aSq4DDjsE6uzcVMS06dsUETz7wlwLKdzy5XHI1N_27s3bVDtA/exec"; // Replace with your Apps Script URL
 
 const form = document.getElementById("feedbackForm");
 const rating = document.getElementById("rating");
@@ -222,57 +124,62 @@ const ratingError = document.getElementById("ratingError");
 const submitBtn = document.getElementById("submitBtn");
 const btnText = document.getElementById("btnText");
 
-// Get event
-fetch(WEB_APP_URL+"?action=get_event_name")
+// GET CURRENT EVENT
+fetch(WEB_APP_URL + "?action=get_event_name")
 .then(r=>r.json())
 .then(d=>{
-  eventDisplay.value=d.event;
-  eventHidden.value=d.event;
+  const lastEvent = localStorage.getItem("last_event");
+  if(lastEvent && lastEvent !== d.event){
+    localStorage.removeItem("submitted_"+lastEvent);
+  }
+  localStorage.setItem("last_event", d.event);
+
+  eventDisplay.value = d.event;
+  eventHidden.value = d.event;
 
   if(localStorage.getItem("submitted_"+d.event)){
-    form.style.display="none";
-    formHeading.style.display="none";
-    submittedMessage.style.display="block";
+    form.style.display = "none";
+    document.getElementById("formHeading").style.display = "none";
+    document.getElementById("submittedMessage").style.display = "block";
   }
 });
 
-// Emoji select
+// EMOJI SELECT
 document.querySelectorAll(".emoji-item").forEach(i=>{
-  i.onclick=()=>{
+  i.onclick = ()=>{
     document.querySelectorAll(".emoji-item").forEach(e=>e.classList.remove("selected"));
     i.classList.add("selected");
-    rating.value=i.dataset.v;
-    ratingError.style.display="none";
+    rating.value = i.dataset.v;
+    ratingError.style.display = "none";
   };
 });
 
-// Submit
-form.onsubmit=e=>{
+// SUBMIT FORM
+form.onsubmit = e=>{
   e.preventDefault();
   if(!rating.value){
-    ratingError.style.display="block";
+    ratingError.style.display = "block";
     return;
   }
 
-  submitBtn.disabled=true;
-  btnText.innerHTML=`<div class="spinner"></div> Submitting…`;
+  submitBtn.disabled = true;
+  btnText.innerHTML = '<div class="spinner"></div>';
 
-  fetch(WEB_APP_URL,{method:"POST",body:new FormData(form)})
-  .then(r=>r.text())
-  .then(res=>{
-    submitBtn.disabled=false;
-    btnText.innerHTML="Submit Feedback";
+  fetch(WEB_APP_URL, {method:"POST", body: new FormData(form)})
+  .then(r => r.json())
+  .then(res => {
+    submitBtn.disabled = false;
+    btnText.innerHTML = "Submit Feedback";
 
-    if(res==="success"){
-      localStorage.setItem("submitted_"+eventHidden.value,"yes");
-      thankyou.style.display="flex";
-
+    if(res.status === "already" || res.status === "success"){
+      localStorage.setItem("submitted_"+eventHidden.value, "yes");
+      document.getElementById("thankyou").style.display = "flex";
       setTimeout(()=>{
-        thankyou.style.display="none";
-        form.style.display="none";
-        formHeading.style.display="none";
-        submittedMessage.style.display="block";
-      },6000);
+        document.getElementById("thankyou").style.display = "none";
+        form.style.display = "none";
+        document.getElementById("formHeading").style.display = "none";
+        document.getElementById("submittedMessage").style.display = "block";
+      },4000);
     }
   });
 };
